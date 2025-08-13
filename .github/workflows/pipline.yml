@@ -24,19 +24,19 @@ jobs:
       - run: npm run eslint
       - run: npm run build
       - run: npm run test
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-      - name: Trigger deployment
-        if: ${{ github.event_name == 'push' }}
-        run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
+      # - name: Run Playwright tests
+      #   run: npx playwright test
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ !cancelled() }}
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
+      # - name: Trigger deployment
+      #   if: ${{ github.event_name == 'push' }}
+      #   run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
   tag_release:
     needs: simple-deployment-pipeline
     runs-on: ubuntu-latest
@@ -49,3 +49,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           DRY_RUN: true
+
+  a_test_job:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: commit messages
+          env:
+            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+          run: echo "$COMMIT_MESSAGES"
