@@ -11,4 +11,3 @@ Besides Jenkins and GitHub Actions, alternatives for setting up CI include **Git
 Choosing between **self-hosted** and **cloud-based CI** depends on multiple factors like cost, security requirements, scalability, and team expertise. Self-hosting tools like Jenkins offer full control and privacy but require maintenance. Cloud-based options like GitHub Actions reduce overhead, scale easily, and are easier to configure — making them ideal for small to mid-sized teams.
 
 To make a final decision, we would need to know about the team’s infrastructure experience, the security policies, budget constraints, and how often the pipeline needs to run.
- 
