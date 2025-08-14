@@ -48,14 +48,3 @@ jobs:
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
         uses: anothrNick/github-tag-action@1.73.0
-
-  a_test_job:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - name: commit messages
-          env:
-            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-            JOIN: ${{ join(github.event.commits.*.message, ' ') }}
-            CONTAINS: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
-          run: echo "$COMMIT_MESSAGES \n $JOIN \n $CONTAINS"
