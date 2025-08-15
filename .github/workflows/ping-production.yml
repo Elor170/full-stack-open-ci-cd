@@ -3,10 +3,6 @@ name: Ping Production
 on:
   schedule:
     - cron: "0 17 * * *"
-  push:
-    branches:
-      - schedule-health-check
-
 jobs:
   ping-db:
     runs-on: ubuntu-latest
