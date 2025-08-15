@@ -14,6 +14,10 @@ on:
 jobs:
   simple-deployment-pipeline:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_CONDITION: >-
+          ${{ github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.text, ' '), '#skip') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,16 +39,43 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Trigger deployment
-        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+        if: ${{ env.DEPLOY_CONDITION == 'true' }}
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+            # Success notification to Discord
+      - name: Notify Discord on Success
+        if: ${{ success() && env.DEPLOY_CONDITION == 'true' }}
+        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: |
+            ✅ Deployment succeeded!
+            • Commit: `${{ github.sha }}`
+            • Branch: `${{ github.ref_name }}`
+            • [View run details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      
+      # Failure notification to Discord
+      - name: Notify Discord on Failure
+        if: ${{ failure() && env.DEPLOY_CONDITION == 'true' }}
+        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: |
+            ❌ Deployment failed!
+            • Commit: `${{ github.sha }}`
+            • [Check logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+  
   tag_release:
     needs: simple-deployment-pipeline
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DEFAULT_BUMP: patch
+      DEPLOY_CONDITION: >-
+          ${{ github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.text, ' '), '#skip') }}
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+        if: ${{ env.DEPLOY_CONDITION == 'true' }}
         uses: anothrNick/github-tag-action@1.73.0
