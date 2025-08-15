@@ -2,7 +2,7 @@ name: Ping Production
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 17 * * *"
 
 jobs:
   ping-db:
