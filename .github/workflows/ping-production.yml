@@ -1,9 +1,8 @@
 name: Ping Production
 
 on:
-  push:
-    branches:
-      - schedule-health-check
+  schedule:
+    - cron: "*/5 * * * *"
 
 jobs:
   ping-db:
