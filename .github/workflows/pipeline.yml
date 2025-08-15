@@ -48,7 +48,8 @@ jobs:
         uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          text: |
+          severity: info
+          details: |
             ✅ Deployment succeeded!
             • Commit: `${{ github.sha }}`
             • Branch: `${{ github.ref_name }}`
@@ -57,10 +58,11 @@ jobs:
       # Failure notification to Discord
       - name: Notify Discord on Failure
         if: ${{ failure() && env.DEPLOY_CONDITION == 'true' }}
-        uses: rjstone/discord-webhook-notify@v2.2.1
+        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          text: |
+          severity: error
+          details: |
             ❌ Deployment failed!
             • Commit: `${{ github.sha }}`
             • [Check logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
