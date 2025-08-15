@@ -57,7 +57,7 @@ jobs:
       # Failure notification to Discord
       - name: Notify Discord on Failure
         if: ${{ failure() && env.DEPLOY_CONDITION == 'true' }}
-        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        uses: rjstone/discord-webhook-notify@v2.2.1
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           text: |
